@@ -74,42 +74,33 @@ function sibling($id){
 
 
 // Children
-$y=0;
 function children($id,$firstChild,$x){
-	
+	// echo "<br>".$x;
 	$conn = connect();
 	$user_sql = "SELECT * FROM `table1` WHERE `id`= $id";
 	$user = mysqli_query($conn,$user_sql);
 	$u = mysqli_fetch_assoc($user);
 	if ($u['gender'] == "m") {
-		if ($firstChild == $u['p_id'] ) {
-			$x = 0;
-		}else{
-			$x = 0 ;
-		}
+		
 		$s_id = $u['s_id'];
 		$child_query = "SELECT * FROM `table1` WHERE `p_id`= '$s_id'";
 	}else{
-		$child_query = "SELECT * FROM `table1` WHERE `p_id`= $id";		
-		if ($firstChild == spous($id,"data")['p_id']) {			
-			$x = 0;
-		}else{
-			$x = 0 ;
-		}
-		
-
+		$child_query = "SELECT * FROM `table1` WHERE `p_id`= $id";
 	}
-	$x = $GLOBALS['y'];
-	// echo spous($id,"data")['name'];
+	// echo "<br>".$x;
 	$child = mysqli_query($conn,$child_query);
-	
+	// print_r($r = mysqli_fetch_array($child));
 	$c='';
 	$gc='';
 	while($r = mysqli_fetch_array($child)) {
+		if ($firstChild != $u['p_id'] or $firstChild != spous($id,"data")['p_id']) {
+			$x = $x;
+		}else{
+			$x = 0;
+		}
 		$c .= '<tr>';
 		$c .= '<td>'.$x.'</td>';
 		$c .= '<td>'.$r['name'].'</td>';
-		// $c .= '<td>'.($r['gender'] == "m" ? "Son" : "Doughter").'</td>';
 		$c .= '<td>'.gen_base_rel($x,$r['gender']).'</td>';
 		$c .= '<td>'.$r['p_id'].'</td>';
 		$c .= '<td>'.$r['s_id'].'</td>';
@@ -119,7 +110,7 @@ function children($id,$firstChild,$x){
 		// $c .= spous($id,"table");
 		$new_id = $r['id'];
 		$x++;
-		$gc .=children($new_id,$firstChild,$x);	
+		$gc .=children($new_id,$firstChild,$x);
 	}
 	
 	return $c.$gc;
